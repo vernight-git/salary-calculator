@@ -150,6 +150,17 @@ function ResultView({
         </div>
       </div>
 
+      <h3 style={{ marginTop: '2rem' }}>{t.monthlyPayoutHeading}</h3>
+      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#64748b' }}>{t.monthlyPayoutDescription}</p>
+      <div className="monthly-payout-grid">
+        {input.monthlyNetAmounts.map((amount, index) => (
+          <div key={index} className="monthly-payout-item">
+            <span className="month-label">{t.monthNames[index]}</span>
+            <span className="amount-value">{formatCurrency(amount, currency)}</span>
+          </div>
+        ))}
+      </div>
+
       <h3 style={{ marginTop: '2rem' }}>{t.breakdownHeading}</h3>
       <table className="breakdown-table">
         <tbody>

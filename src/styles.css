@@ -195,6 +195,38 @@ main {
   color: #1e293b;
 }
 
+.monthly-payout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.monthly-payout-item {
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.monthly-payout-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+.month-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.amount-value {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.05rem;
+}
+
 @media (max-width: 768px) {
   h1 {
     font-size: 2rem;
@@ -208,5 +240,9 @@ main {
   .header-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .monthly-payout-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }

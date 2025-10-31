@@ -309,6 +309,26 @@ export function calculateSalary(
   const annualNet = Math.max(0, annualGross - totalDeductions);
   const monthlyNet = months > 0 ? annualNet / months : 0;
 
+  // Calculate monthly social contributions for each month
+  const monthlySocialContributions = monthlyGrosses.map((gross) => {
+    const health = input.privateHealthInsurance ? 0 : applyMonthlyCapWithCustomRate(gross, config.socialContributions.health, effectiveHealthRate);
+    const pension = applyMonthlyCap(gross, config.socialContributions.pension);
+    const unemployment = applyMonthlyCap(gross, config.socialContributions.unemployment);
+    const longTermCare = computeLongTermCareContribution(gross, config.socialContributions.longTermCare, input.childrenUnder25);
+    return health + pension + unemployment + longTermCare;
+  });
+
+  // Distribute taxes and voluntary insurance proportionally based on gross income
+  const monthlyNetAmounts = monthlyGrosses.map((gross, index) => {
+    const proportion = annualGross > 0 ? gross / annualGross : 0;
+    const monthlyIncomeTax = incomeTax * proportion;
+    const monthlySolidarityTax = solidarityTax * proportion;
+    const monthlyChurchTax = churchTax * proportion;
+    const monthlyVoluntary = voluntaryAnnual * proportion;
+    const monthlyDeductions = monthlyIncomeTax + monthlySolidarityTax + monthlyChurchTax + monthlySocialContributions[index] + monthlyVoluntary;
+    return Math.max(0, gross - monthlyDeductions);
+  });
+
   return {
     monthlyGross,
     annualGross,
@@ -320,6 +340,7 @@ export function calculateSalary(
     socialContributions,
     totalDeductions,
     annualNet,
-    monthlyNet
+    monthlyNet,
+    monthlyNetAmounts
   };
 }

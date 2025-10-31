@@ -1212,4 +1212,246 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       // aligns with ~648 EUR monthly net deductions for regular months.
     });
   });
+
+  describe('Monthly payout amounts', () => {
+    it('calculates correct monthly net amounts for each month', () => {
+      const input: SalaryInput = {
+        baseMonthlyGross: 3000,
+        taxClass: 'I',
+        churchTax: false,
+        solidarityTax: true,
+        includeVoluntaryInsurance: false,
+        months: 12,
+        bonuses: [
+          { id: 'june', month: 6, type: 'amount', value: 1000 },
+          { id: 'nov', month: 11, type: 'percent', value: 20 }
+        ],
+        homeOfficeDaysPerYear: 0,
+        commuteDaysPerMonth: 0,
+        commuteDistanceKm: 0,
+        childAllowanceFactors: 0,
+        childrenUnder25: 0,
+        age: 30,
+        federalState: 'NW',
+        healthInsuranceAdditionalRate: 1.7,
+        privateHealthInsurance: false,
+        companyCarBenefit: 0,
+        companyCarType: 'none',
+        capitalGainsAllowance: 0,
+        mealVouchers: 0,
+        companyPension: 0
+      };
+
+      const breakdown = calculateSalary(input, config);
+
+      // Should have 12 monthly net amounts
+      expect(breakdown.monthlyNetAmounts).toHaveLength(12);
+
+      // June (index 5) should have higher net due to 1000 EUR bonus
+      // November (index 10) should have highest net due to 20% bonus
+      expect(breakdown.monthlyNetAmounts[5]).toBeGreaterThan(breakdown.monthlyNetAmounts[0]);
+      expect(breakdown.monthlyNetAmounts[10]).toBeGreaterThan(breakdown.monthlyNetAmounts[0]);
+      expect(breakdown.monthlyNetAmounts[10]).toBeGreaterThan(breakdown.monthlyNetAmounts[5]);
+
+      // Sum of all monthly net amounts should equal annual net
+      const sumMonthlyNet = breakdown.monthlyNetAmounts.reduce((sum, val) => sum + val, 0);
+      expect(sumMonthlyNet).toBeCloseTo(breakdown.annualNet, 2);
+
+      // Regular months (without bonus) should have similar net amounts
+      const regularMonthNets = [
+        breakdown.monthlyNetAmounts[0],
+        breakdown.monthlyNetAmounts[1],
+        breakdown.monthlyNetAmounts[2]
+      ];
+      regularMonthNets.forEach((net) => {
+        expect(net).toBeCloseTo(regularMonthNets[0], 10);
+      });
+    });
+
+    it('calculates correct payout for April with 15000 EUR bonus', () => {
+      const input: SalaryInput = {
+        baseMonthlyGross: 8000,
+        taxClass: 'III',
+        churchTax: false,
+        solidarityTax: true,
+        includeVoluntaryInsurance: false,
+        months: 12,
+        bonuses: [
+          { id: 'april-bonus', month: 4, type: 'amount', value: 15000 }
+        ],
+        homeOfficeDaysPerYear: 200,
+        commuteDaysPerMonth: 4,
+        commuteDistanceKm: 50,
+        childAllowanceFactors: 0,
+        childrenUnder25: 0,
+        age: 35,
+        federalState: 'NW',
+        healthInsuranceAdditionalRate: 1.7,
+        privateHealthInsurance: true,
+        companyCarBenefit: 92500,
+        companyCarType: 'hybrid',
+        capitalGainsAllowance: 0,
+        mealVouchers: 0,
+        companyPension: 400
+      };
+
+      const breakdown = calculateSalary(input, config);
+
+      // April is month 4 (index 3)
+      const aprilNet = breakdown.monthlyNetAmounts[3];
+      const regularMonthNet = breakdown.monthlyNetAmounts[0];
+
+      // April should have significantly higher net due to 15000 EUR bonus
+      expect(aprilNet).toBeGreaterThan(regularMonthNet);
+
+      // The difference should be substantial (the net bonus after deductions)
+      const netBonusEffect = aprilNet - regularMonthNet;
+      expect(netBonusEffect).toBeGreaterThan(8000); // After taxes/contributions
+      expect(netBonusEffect).toBeLessThan(15000); // Less than gross bonus
+
+      // All 12 months should have positive net
+      breakdown.monthlyNetAmounts.forEach((net, index) => {
+        expect(net).toBeGreaterThan(0);
+      });
+
+      // Sum of monthly nets should equal annual net
+      const sumMonthlyNet = breakdown.monthlyNetAmounts.reduce((sum, val) => sum + val, 0);
+      expect(sumMonthlyNet).toBeCloseTo(breakdown.annualNet, 2);
+    });
+
+    it('handles months with zero gross correctly', () => {
+      const input: SalaryInput = {
+        baseMonthlyGross: 5000,
+        taxClass: 'I',
+        churchTax: false,
+        solidarityTax: true,
+        includeVoluntaryInsurance: false,
+        months: 6, // Only 6 months worked
+        bonuses: [],
+        homeOfficeDaysPerYear: 0,
+        commuteDaysPerMonth: 0,
+        commuteDistanceKm: 0,
+        childAllowanceFactors: 0,
+        childrenUnder25: 0,
+        age: 30,
+        federalState: 'NW',
+        healthInsuranceAdditionalRate: 1.7,
+        privateHealthInsurance: false,
+        companyCarBenefit: 0,
+        companyCarType: 'none',
+        capitalGainsAllowance: 0,
+        mealVouchers: 0,
+        companyPension: 0
+      };
+
+      const breakdown = calculateSalary(input, config);
+
+      // Should have 12 monthly net amounts
+      expect(breakdown.monthlyNetAmounts).toHaveLength(12);
+
+      // First 6 months should have positive net
+      for (let i = 0; i < 6; i++) {
+        expect(breakdown.monthlyNetAmounts[i]).toBeGreaterThan(0);
+      }
+
+      // Last 6 months should have zero or very small net (no gross)
+      for (let i = 6; i < 12; i++) {
+        expect(breakdown.monthlyNetAmounts[i]).toBeCloseTo(0, 2);
+      }
+
+      // Sum of monthly nets should equal annual net
+      const sumMonthlyNet = breakdown.monthlyNetAmounts.reduce((sum, val) => sum + val, 0);
+      expect(sumMonthlyNet).toBeCloseTo(breakdown.annualNet, 2);
+    });
+
+    it('distributes taxes and deductions proportionally', () => {
+      const input: SalaryInput = {
+        baseMonthlyGross: 4000,
+        taxClass: 'I',
+        churchTax: false,
+        solidarityTax: true,
+        includeVoluntaryInsurance: false,
+        months: 12,
+        bonuses: [
+          { id: 'december', month: 12, type: 'amount', value: 5000 }
+        ],
+        homeOfficeDaysPerYear: 0,
+        commuteDaysPerMonth: 0,
+        commuteDistanceKm: 0,
+        childAllowanceFactors: 0,
+        childrenUnder25: 0,
+        age: 30,
+        federalState: 'NW',
+        healthInsuranceAdditionalRate: 1.7,
+        privateHealthInsurance: false,
+        companyCarBenefit: 0,
+        companyCarType: 'none',
+        capitalGainsAllowance: 0,
+        mealVouchers: 0,
+        companyPension: 0
+      };
+
+      const breakdown = calculateSalary(input, config);
+
+      // December (index 11) has 4000 + 5000 = 9000 gross
+      // Other months have 4000 gross
+      const decemberGross = 9000;
+      const regularGross = 4000;
+      const totalGross = regularGross * 11 + decemberGross;
+
+      // December should have roughly (9000/53000) of total deductions
+      // plus its social contributions
+      const decemberProportion = decemberGross / totalGross;
+      const regularProportion = regularGross / totalGross;
+
+      // December net should be higher than regular months
+      expect(breakdown.monthlyNetAmounts[11]).toBeGreaterThan(breakdown.monthlyNetAmounts[0]);
+
+      // The increase should be less than the full 5000 bonus (due to taxes)
+      const netIncrease = breakdown.monthlyNetAmounts[11] - breakdown.monthlyNetAmounts[0];
+      expect(netIncrease).toBeGreaterThan(2500); // At least 50% of bonus
+      expect(netIncrease).toBeLessThan(5000); // Less than full bonus
+    });
+
+    it('handles percentage bonuses correctly in monthly breakdown', () => {
+      const input: SalaryInput = {
+        baseMonthlyGross: 5000,
+        taxClass: 'I',
+        churchTax: false,
+        solidarityTax: true,
+        includeVoluntaryInsurance: false,
+        months: 12,
+        bonuses: [
+          { id: 'june-percent', month: 6, type: 'percent', value: 50 } // 50% of annual gross
+        ],
+        homeOfficeDaysPerYear: 0,
+        commuteDaysPerMonth: 0,
+        commuteDistanceKm: 0,
+        childAllowanceFactors: 0,
+        childrenUnder25: 0,
+        age: 30,
+        federalState: 'NW',
+        healthInsuranceAdditionalRate: 1.7,
+        privateHealthInsurance: false,
+        companyCarBenefit: 0,
+        companyCarType: 'none',
+        capitalGainsAllowance: 0,
+        mealVouchers: 0,
+        companyPension: 0
+      };
+
+      const breakdown = calculateSalary(input, config);
+
+      // June (index 5) should have 5000 + 50% of (5000 * 12) = 5000 + 30000 = 35000 gross
+      const juneNet = breakdown.monthlyNetAmounts[5];
+      const regularMonthNet = breakdown.monthlyNetAmounts[0];
+
+      // June should be significantly higher
+      expect(juneNet).toBeGreaterThan(regularMonthNet * 5); // At least 5x regular month
+
+      // Sum of monthly nets should equal annual net
+      const sumMonthlyNet = breakdown.monthlyNetAmounts.reduce((sum, val) => sum + val, 0);
+      expect(sumMonthlyNet).toBeCloseTo(breakdown.annualNet, 2);
+    });
+  });
 });
