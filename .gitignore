@@ -5,3 +5,6 @@ dist
 npm-debug.log*
 .vscode
 coverage
+playwright-report
+test-results
+.husky/_

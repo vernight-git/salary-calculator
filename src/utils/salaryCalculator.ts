@@ -8,11 +8,22 @@ import type { BonusEntry, CompanyCarType, SalaryBreakdown, SalaryInput } from '.
 
 const MONTHS_PER_YEAR = 12;
 
+/**
+ * Clamps a month number to a valid array index (0-11)
+ * @param month - Month number (1-12)
+ * @returns Zero-based month index (0-11)
+ */
 function clampMonth(month: number): number {
   if (Number.isNaN(month)) return 0;
   return Math.min(Math.max(month - 1, 0), MONTHS_PER_YEAR - 1);
 }
 
+/**
+ * Calculates the monetary value of a bonus entry
+ * @param entry - Bonus entry configuration
+ * @param baseAnnualGross - Base annual gross salary (for percentage calculations)
+ * @returns Bonus amount in euros
+ */
 function calculateBonusValue(entry: BonusEntry, baseAnnualGross: number): number {
   if (entry.type === 'percent') {
     return (entry.value / 100) * baseAnnualGross;
@@ -20,6 +31,13 @@ function calculateBonusValue(entry: BonusEntry, baseAnnualGross: number): number
   return entry.value;
 }
 
+/**
+ * Calculates monthly gross salaries including bonuses
+ * @param baseMonthlyGross - Base monthly gross salary
+ * @param months - Number of months worked in the year
+ * @param bonuses - Array of bonus entries
+ * @returns Object containing monthly grosses array and total annual bonuses
+ */
 export function calculateMonthlyGrosses(
   baseMonthlyGross: number,
   months: number,
