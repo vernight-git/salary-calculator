@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Log error to console in development
     console.error('Error caught by boundary:', error, errorInfo);
-    
+
     // In production, you could send this to an error tracking service like Sentry
     // Example: Sentry.captureException(error, { extra: errorInfo });
   }
@@ -68,9 +68,7 @@ export class ErrorBoundary extends Component<Props, State> {
         >
           <h1>{t.errorBoundaryTitle}</h1>
           <p>{t.errorBoundaryMessage}</p>
-          <p style={{ fontSize: '0.875rem', color: '#666' }}>
-            {this.state.error?.message}
-          </p>
+          <p style={{ fontSize: '0.875rem', color: '#666' }}>{this.state.error?.message}</p>
           <button
             onClick={() => window.location.reload()}
             style={{

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import configJson from '../public/data/config.json';
-import { calculateMonthlyGrosses, calculateSalary, computeIncomeTax } from '../src/utils/salaryCalculator';
+import {
+  calculateMonthlyGrosses,
+  calculateSalary,
+  computeIncomeTax
+} from '../src/utils/salaryCalculator';
 import type { ConfigData } from '../src/types/config';
 import type { SalaryInput } from '../src/types/salary';
 
@@ -75,10 +79,7 @@ describe('calculateSalary', () => {
         breakdown.socialContributions.voluntary,
       2
     );
-    expect(breakdown.annualNet).toBeCloseTo(
-      breakdown.annualGross - breakdown.totalDeductions,
-      2
-    );
+    expect(breakdown.annualNet).toBeCloseTo(breakdown.annualGross - breakdown.totalDeductions, 2);
   });
 
   it('adds voluntary insurance when requested', () => {
@@ -153,10 +154,7 @@ describe('calculateSalary', () => {
 
   it('reduces taxable income with company pension', () => {
     const withoutPension = calculateSalary(baseInput, config);
-    const withPension = calculateSalary(
-      { ...baseInput, companyPension: 200 },
-      config
-    );
+    const withPension = calculateSalary({ ...baseInput, companyPension: 200 }, config);
 
     expect(withPension.taxableIncome).toBeLessThan(withoutPension.taxableIncome);
     expect(withPension.incomeTax).toBeLessThan(withoutPension.incomeTax);
@@ -187,14 +185,8 @@ describe('calculateSalary', () => {
   });
 
   it('applies custom health insurance additional rate', () => {
-    const standard = calculateSalary(
-      { ...baseInput, healthInsuranceAdditionalRate: 1.5 },
-      config
-    );
-    const higher = calculateSalary(
-      { ...baseInput, healthInsuranceAdditionalRate: 2.5 },
-      config
-    );
+    const standard = calculateSalary({ ...baseInput, healthInsuranceAdditionalRate: 1.5 }, config);
+    const higher = calculateSalary({ ...baseInput, healthInsuranceAdditionalRate: 2.5 }, config);
 
     expect(higher.socialContributions.health).toBeGreaterThan(standard.socialContributions.health);
   });
@@ -204,7 +196,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
   /**
    * Test cases based on German salary calculator reference data for 2025
    * Sources: brutto-netto-rechner.info, arbeitnow.com, salaryaftertax.com
-   * 
+   *
    * These tests verify calculations against real-world examples from online calculators
    * to ensure the salary calculator produces accurate results for various scenarios.
    */
@@ -248,13 +240,13 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // Verify childless surcharge is applied (0.6% additional for long-term care)
       expect(breakdown.socialContributions.longTermCare).toBeGreaterThan(0);
-      
+
       // Income tax should be positive for 36000 EUR gross
       expect(breakdown.incomeTax).toBeGreaterThan(0);
-      
+
       // Verify deductions are reasonable (35-40% of gross)
       const deductionRate = breakdown.totalDeductions / breakdown.annualGross;
-      expect(deductionRate).toBeGreaterThan(0.30);
+      expect(deductionRate).toBeGreaterThan(0.3);
       expect(deductionRate).toBeLessThan(0.45);
     });
 
@@ -403,7 +395,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       const breakdown = calculateSalary(input, config);
 
       expect(breakdown.annualGross).toBe(48000);
-      
+
       // Tax Class II has additional allowance of 4260 EUR (single parent relief)
       // Reference: Net should be ~100-150 EUR more than Tax Class I
       // Expected: ~2650-2750 EUR net monthly
@@ -534,7 +526,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       const breakdown = calculateSalary(input, config);
 
       expect(breakdown.annualGross).toBe(36000);
-      
+
       // Tax Class III has highest allowances (24192 EUR basic allowance)
       // Reference: ~2400-2510 EUR net monthly
       expect(breakdown.monthlyNet).toBeGreaterThan(2300);
@@ -660,7 +652,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // Tax Class III should have significantly higher net
       expect(breakdownIII.monthlyNet).toBeGreaterThan(breakdownI.monthlyNet);
-      
+
       // Difference should be at least 400-600 EUR monthly
       const netDifference = breakdownIII.monthlyNet - breakdownI.monthlyNet;
       expect(netDifference).toBeGreaterThan(300);
@@ -815,8 +807,9 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // The difference should be approximately 0.6% of capped base
       // For 4000 EUR: 4000 * 0.006 * 12 = 288 EUR annually
-      const difference = breakdownWithout.socialContributions.longTermCare - 
-                        breakdownWith.socialContributions.longTermCare;
+      const difference =
+        breakdownWithout.socialContributions.longTermCare -
+        breakdownWith.socialContributions.longTermCare;
       expect(difference).toBeGreaterThan(200);
       expect(difference).toBeLessThan(400);
     });
@@ -1008,13 +1001,13 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
        * - Commute distance: 50 km (tax-free allowance on tax card)
        * - Home office: 1 day per week in office (4 days/month)
        * - Voluntary health insurance (private)
-       * 
+       *
        * Expected calculation from problem statement:
        * - Gesamtbrutto April: 23,613.11 EUR (gross including all components)
        * - Nettoentgeld: 16,530.75 EUR (after taxes and social contributions)
        * - Net deductions: -1,644.30 EUR (health insurance, pension payments, car costs)
        * - Expected final payout: 14,886.45 EUR (16,530.75 - 1,644.30)
-       * 
+       *
        * Note: The calculator computes annual values and averages them.
        * This test validates the calculation produces values consistent with
        * the expected payout when considering the monthly breakdown.
@@ -1062,16 +1055,16 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
         input.months ?? 12,
         input.bonuses
       );
-      
+
       // April is month 4 (index 3)
       const aprilGross = monthlyGrosses[3];
-      
+
       // April gross should be base 8000 + bonus 15000 = 23000
       expect(aprilGross).toBeCloseTo(23000, 0);
 
       // Annual gross should be 8000 * 12 + 15000 = 111000
       expect(breakdown.annualGross).toBe(111000);
-      
+
       // Taxable income includes company car benefit (92,500 * 0.005 * 12 = 5,550)
       // and reduces for pension (400 * 12 = 4,800) and commute allowance
       // Expected taxable income should be around 111,000 + 5,550 - 4,800 - allowances
@@ -1080,7 +1073,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // With Tax Class III and no children, childless surcharge applies to long-term care
       expect(breakdown.socialContributions.longTermCare).toBeGreaterThan(0);
-      
+
       // Private health insurance should have zero statutory contribution
       expect(breakdown.socialContributions.health).toBe(0);
 
@@ -1094,10 +1087,10 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       // Long-term care: max 5512.5 * (0.018 + 0.006) * 12 = 1587.60
       expect(breakdown.socialContributions.pension).toBeGreaterThan(8900);
       expect(breakdown.socialContributions.pension).toBeLessThan(9100);
-      
+
       expect(breakdown.socialContributions.unemployment).toBeGreaterThan(1100);
       expect(breakdown.socialContributions.unemployment).toBeLessThan(1200);
-      
+
       // With childless surcharge: 5512.5 * (0.018 + 0.006) = 132.30 per month
       expect(breakdown.socialContributions.longTermCare).toBeGreaterThan(1500);
       expect(breakdown.socialContributions.longTermCare).toBeLessThan(1650);
@@ -1107,7 +1100,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       // Annual net should be around 76,000 - 82,000 EUR range
       expect(breakdown.annualNet).toBeGreaterThan(74000);
       expect(breakdown.annualNet).toBeLessThan(82000);
-      
+
       // Average monthly net (annual / 12)
       expect(breakdown.monthlyNet).toBeGreaterThan(6000);
       expect(breakdown.monthlyNet).toBeLessThan(7000);
@@ -1118,20 +1111,23 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       // The current calculator gives us step 1 (annual average)
       // For April specifically, the net before deductions would be ~16,530.75 EUR
       // Then subtract ~1,644.30 EUR net deductions = 14,886.45 EUR final payout
-      
+
       // Approximate monthly calculation for April:
       // From the problem statement, we know:
       // - Nettoentgeld (net salary before net deductions): 16,530.75 EUR
-      // - Net deductions (voluntary health, pension, company car): -1,644.30 EUR  
+      // - Net deductions (voluntary health, pension, company car): -1,644.30 EUR
       // - Final payout: 14,886.45 EUR
       //
       // Validation: 16530.75 - 1644.30 = 14886.45 ✓
       const expectedNettoentgeldApril = 16530.75;
-      const expectedNetDeductions = 1644.30;
+      const expectedNetDeductions = 1644.3;
       const expectedAuszahlungApril = 14886.45;
-      
+
       // Verify the mathematical relationship
-      expect(expectedNettoentgeldApril - expectedNetDeductions).toBeCloseTo(expectedAuszahlungApril, 2);
+      expect(expectedNettoentgeldApril - expectedNetDeductions).toBeCloseTo(
+        expectedAuszahlungApril,
+        2
+      );
     });
 
     it('calculates correct payout for regular month without bonus (~4,950 EUR expected)', () => {
@@ -1193,7 +1189,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // The problem statement suggests ~4,950 EUR payout for regular months
       // This would be after subtracting voluntary/net deductions
-      // 
+      //
       // If monthlyNet is ~5,598 EUR and expected payout is ~4,950 EUR,
       // then net deductions would be: 5,598 - 4,950 = ~648 EUR monthly
       //
@@ -1201,12 +1197,12 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       // (April had higher deductions due to bonus month adjustments)
       const expectedPayoutRegularMonth = 4950;
       const impliedNetDeductions = breakdownWithoutBonus.monthlyNet - expectedPayoutRegularMonth;
-      
+
       // Net deductions for regular month should be around 600-700 EUR
       // (less than April's 1,644 EUR)
       expect(impliedNetDeductions).toBeGreaterThan(500);
       expect(impliedNetDeductions).toBeLessThan(800);
-      
+
       // Alternative calculation: if we use the same net deduction structure as April
       // but scaled down, we get different results. The ~4,950 EUR expectation
       // aligns with ~648 EUR monthly net deductions for regular months.
@@ -1276,9 +1272,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
         solidarityTax: true,
         includeVoluntaryInsurance: false,
         months: 12,
-        bonuses: [
-          { id: 'april-bonus', month: 4, type: 'amount', value: 15000 }
-        ],
+        bonuses: [{ id: 'april-bonus', month: 4, type: 'amount', value: 15000 }],
         homeOfficeDaysPerYear: 200,
         commuteDaysPerMonth: 4,
         commuteDistanceKm: 50,
@@ -1372,9 +1366,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
         solidarityTax: true,
         includeVoluntaryInsurance: false,
         months: 12,
-        bonuses: [
-          { id: 'december', month: 12, type: 'amount', value: 5000 }
-        ],
+        bonuses: [{ id: 'december', month: 12, type: 'amount', value: 5000 }],
         homeOfficeDaysPerYear: 0,
         commuteDaysPerMonth: 0,
         commuteDistanceKm: 0,

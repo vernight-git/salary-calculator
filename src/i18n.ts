@@ -33,7 +33,8 @@ export const translations = {
     additionalInputsHeading: 'Additional Benefits & Deductions',
     bonusesHeading: 'Bonuses',
     addBonus: 'Add bonus',
-    bonusDescription: 'Configure fixed bonuses or percentages of the annual gross salary. Assign them to the months in which they are paid.',
+    bonusDescription:
+      'Configure fixed bonuses or percentages of the annual gross salary. Assign them to the months in which they are paid.',
     bonusMonth: 'Month',
     bonusType: 'Type',
     bonusTypeAmount: 'Fixed amount',
@@ -71,9 +72,23 @@ export const translations = {
     languageLabel: 'Language',
     monthlyPayoutHeading: 'Monthly Payouts',
     monthlyPayoutDescription: 'Net amount for each month of the year',
-    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthNames: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ],
     errorBoundaryTitle: 'Oops! Something went wrong',
-    errorBoundaryMessage: 'We are sorry, but something unexpected happened. Please try refreshing the page.',
+    errorBoundaryMessage:
+      'We are sorry, but something unexpected happened. Please try refreshing the page.',
     errorBoundaryRefresh: 'Refresh Page'
   },
   de: {
@@ -108,7 +123,8 @@ export const translations = {
     additionalInputsHeading: 'Weitere Leistungen & Abzüge',
     bonusesHeading: 'Boni',
     addBonus: 'Bonus hinzufügen',
-    bonusDescription: 'Konfiguriere feste Boni oder Prozentsätze des Jahresbruttos und ordne sie den Auszahlungsmonaten zu.',
+    bonusDescription:
+      'Konfiguriere feste Boni oder Prozentsätze des Jahresbruttos und ordne sie den Auszahlungsmonaten zu.',
     bonusMonth: 'Monat',
     bonusType: 'Art',
     bonusTypeAmount: 'Fester Betrag',
@@ -146,15 +162,31 @@ export const translations = {
     languageLabel: 'Sprache',
     monthlyPayoutHeading: 'Monatliche Auszahlungen',
     monthlyPayoutDescription: 'Nettobetrag für jeden Monat des Jahres',
-    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    monthNames: [
+      'Januar',
+      'Februar',
+      'März',
+      'April',
+      'Mai',
+      'Juni',
+      'Juli',
+      'August',
+      'September',
+      'Oktober',
+      'November',
+      'Dezember'
+    ],
     errorBoundaryTitle: 'Hoppla! Etwas ist schief gelaufen',
-    errorBoundaryMessage: 'Es tut uns leid, aber etwas Unerwartetes ist passiert. Bitte versuchen Sie, die Seite zu aktualisieren.',
+    errorBoundaryMessage:
+      'Es tut uns leid, aber etwas Unerwartetes ist passiert. Bitte versuchen Sie, die Seite zu aktualisieren.',
     errorBoundaryRefresh: 'Seite aktualisieren'
   }
 } as const;
 
 export type Translations = (typeof translations)[SupportedLanguage];
 
-export const supportedLanguages: SupportedLanguage[] = Object.keys(translations) as SupportedLanguage[];
+export const supportedLanguages: SupportedLanguage[] = Object.keys(
+  translations
+) as SupportedLanguage[];
 
 export const getTranslation = (language: SupportedLanguage) => translations[language];
