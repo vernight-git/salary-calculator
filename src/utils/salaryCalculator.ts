@@ -141,7 +141,7 @@ function computeCompanyCarBenefit(
   if (listPrice <= 0 || carType === 'none') {
     return 0;
   }
-  const benefitRate = benefitRates[carType];
+  const benefitRate = benefitRates[carType as keyof typeof benefitRates] ?? 0;
   return listPrice * benefitRate * MONTHS_PER_YEAR;
 }
 
