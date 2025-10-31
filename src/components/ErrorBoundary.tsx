@@ -42,10 +42,16 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       // Get language from props or default to browser language
-      const browserLang = typeof navigator !== 'undefined' 
-        ? navigator.language.split('-')[0] 
-        : 'en';
-      const language = this.props.language || (browserLang === 'de' ? 'de' : 'en');
+      let language = this.props.language;
+      if (!language && typeof navigator !== 'undefined' && navigator.language) {
+        try {
+          const browserLang = navigator.language.split('-')[0];
+          language = browserLang === 'de' ? 'de' : 'en';
+        } catch {
+          language = 'en';
+        }
+      }
+      language = language || 'en';
       const t = getTranslation(language);
 
       return (
