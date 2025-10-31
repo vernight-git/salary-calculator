@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "country": "Germany",
+    "currency": "EUR",
+    "taxYear": 2024
+  },
+  "taxClasses": {
+    "I": {
+      "label": "Class I",
+      "basicAllowance": 11604,
+      "additionalAllowance": 0,
+      "brackets": [
+        { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 16396, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 51205, "rate": 0.3, "baseTax": 2295.44, "baseIncome": 16396 },
+        { "upTo": 266221, "rate": 0.42, "baseTax": 12738.14, "baseIncome": 51205 },
+        { "upTo": null, "rate": 0.45, "baseTax": 103044.86, "baseIncome": 266221 }
+      ]
+    },
+    "II": {
+      "label": "Class II",
+      "basicAllowance": 11604,
+      "additionalAllowance": 4260,
+      "brackets": [
+        { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 16396, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 51205, "rate": 0.3, "baseTax": 2295.44, "baseIncome": 16396 },
+        { "upTo": 266221, "rate": 0.42, "baseTax": 12738.14, "baseIncome": 51205 },
+        { "upTo": null, "rate": 0.45, "baseTax": 103044.86, "baseIncome": 266221 }
+      ]
+    },
+    "III": {
+      "label": "Class III",
+      "basicAllowance": 23208,
+      "additionalAllowance": 0,
+      "brackets": [
+        { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 32792, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 82410, "rate": 0.3, "baseTax": 4590.88, "baseIncome": 32792 },
+        { "upTo": 532442, "rate": 0.42, "baseTax": 19476.28, "baseIncome": 82410 },
+        { "upTo": null, "rate": 0.45, "baseTax": 208489.72, "baseIncome": 532442 }
+      ]
+    },
+    "IV": {
+      "label": "Class IV",
+      "basicAllowance": 11604,
+      "additionalAllowance": 0,
+      "brackets": [
+        { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 16396, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 51205, "rate": 0.3, "baseTax": 2295.44, "baseIncome": 16396 },
+        { "upTo": 266221, "rate": 0.42, "baseTax": 12738.14, "baseIncome": 51205 },
+        { "upTo": null, "rate": 0.45, "baseTax": 103044.86, "baseIncome": 266221 }
+      ]
+    },
+    "V": {
+      "label": "Class V",
+      "basicAllowance": 0,
+      "additionalAllowance": 0,
+      "brackets": [
+        { "upTo": 0, "rate": 0.06, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 11604, "rate": 0.2, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 28000, "rate": 0.3, "baseTax": 2320.8, "baseIncome": 11604 },
+        { "upTo": 62809, "rate": 0.35, "baseTax": 6599.6, "baseIncome": 28000 },
+        { "upTo": 277825, "rate": 0.42, "baseTax": 18274.55, "baseIncome": 62809 },
+        { "upTo": null, "rate": 0.45, "baseTax": 109580.66, "baseIncome": 277825 }
+      ]
+    },
+    "VI": {
+      "label": "Class VI",
+      "basicAllowance": 0,
+      "additionalAllowance": 0,
+      "brackets": [
+        { "upTo": 0, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 11604, "rate": 0.25, "baseTax": 0, "baseIncome": 0 },
+        { "upTo": 28000, "rate": 0.35, "baseTax": 2901, "baseIncome": 11604 },
+        { "upTo": 62809, "rate": 0.4, "baseTax": 7852.4, "baseIncome": 28000 },
+        { "upTo": 277825, "rate": 0.42, "baseTax": 19291.96, "baseIncome": 62809 },
+        { "upTo": null, "rate": 0.45, "baseTax": 104415.78, "baseIncome": 277825 }
+      ]
+    }
+  },
+  "socialContributions": {
+    "health": {
+      "employeeRate": 0.073,
+      "additionalRate": 0.015,
+      "capMonthly": 4987.5
+    },
+    "pension": {
+      "employeeRate": 0.093,
+      "capMonthly": 7441.67
+    },
+    "unemployment": {
+      "employeeRate": 0.012,
+      "capMonthly": 7441.67
+    },
+    "longTermCare": {
+      "employeeRate": 0.01525,
+      "surchargeWithoutChildren": 0.006,
+      "capMonthly": 4987.5
+    }
+  },
+  "solidarityTax": {
+    "freeAllowance": 16956,
+    "rate": 0.055
+  },
+  "churchTax": {
+    "rate": 0.09
+  },
+  "allowances": {
+    "homeOfficeDailyRate": 6,
+    "homeOfficeMax": 1260,
+    "commuteRateFirst20": 0.3,
+    "commuteRateBeyond": 0.38,
+    "voluntaryInsurance": {
+      "thresholdMonthly": 5987.5,
+      "additionalRate": 0.01
+    }
+  }
+}
