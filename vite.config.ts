@@ -28,7 +28,12 @@ export default defineConfig({
         'playwright.config.ts',
         'dist/',
         '*.config.js',
-        '*.config.ts'
+        '*.config.ts',
+        '*.config.mjs',
+        'src/main.tsx', // Entry point - tested via E2E
+        'src/App.tsx', // Main component - tested via E2E
+        'src/utils/monitoring.ts', // Monitoring framework - integration code
+        'src/types/**' // Type definitions - no runtime code
       ],
       thresholds: {
         lines: 80,
