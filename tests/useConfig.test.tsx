@@ -247,7 +247,7 @@ describe('useConfig hook', () => {
     resolvePromise!({
       ok: true,
       json: async () => mockConfigData
-    });
+    } as Response);
 
     await waitFor(() => {
       expect(screen.getByText('Config loaded')).toBeInTheDocument();
