@@ -20,6 +20,14 @@ export interface SalaryInput {
   commuteDaysPerMonth: number;
   commuteDistanceKm: number;
   hasChildren: boolean;
+  age: number;
+  federalState: string;
+  healthInsuranceAdditionalRate: number;
+  privateHealthInsurance: boolean;
+  companyCarBenefit: number;
+  capitalGainsAllowance: number;
+  mealVouchers: number;
+  companyPension: number;
 }
 
 export interface SalaryBreakdown {

@@ -45,7 +45,15 @@ describe('calculateSalary', () => {
     homeOfficeDaysPerYear: 60,
     commuteDaysPerMonth: 12,
     commuteDistanceKm: 18,
-    hasChildren: true
+    hasChildren: true,
+    age: 35,
+    federalState: 'NW',
+    healthInsuranceAdditionalRate: 1.5,
+    privateHealthInsurance: false,
+    companyCarBenefit: 0,
+    capitalGainsAllowance: 0,
+    mealVouchers: 0,
+    companyPension: 0
   };
 
   it('returns a consistent breakdown', () => {
@@ -82,5 +90,65 @@ describe('calculateSalary', () => {
       breakdownWithout.socialContributions.voluntary
     );
     expect(breakdownWith.totalDeductions).toBeGreaterThan(breakdownWithout.totalDeductions);
+  });
+
+  it('applies company car benefit to taxable income', () => {
+    const withoutCar = calculateSalary(baseInput, config);
+    const withCar = calculateSalary(
+      { ...baseInput, companyCarBenefit: 30000 },
+      config
+    );
+
+    expect(withCar.taxableIncome).toBeGreaterThan(withoutCar.taxableIncome);
+    expect(withCar.incomeTax).toBeGreaterThan(withoutCar.incomeTax);
+    expect(withCar.annualNet).toBeLessThan(withoutCar.annualNet);
+  });
+
+  it('reduces taxable income with company pension', () => {
+    const withoutPension = calculateSalary(baseInput, config);
+    const withPension = calculateSalary(
+      { ...baseInput, companyPension: 200 },
+      config
+    );
+
+    expect(withPension.taxableIncome).toBeLessThan(withoutPension.taxableIncome);
+    expect(withPension.incomeTax).toBeLessThan(withoutPension.incomeTax);
+  });
+
+  it('applies private health insurance exemption', () => {
+    const statutory = calculateSalary(baseInput, config);
+    const privateInsurance = calculateSalary(
+      { ...baseInput, privateHealthInsurance: true },
+      config
+    );
+
+    expect(privateInsurance.socialContributions.health).toBe(0);
+    expect(privateInsurance.totalDeductions).toBeLessThan(statutory.totalDeductions);
+  });
+
+  it('uses federal state-specific church tax rate', () => {
+    const badenWuerttemberg = calculateSalary(
+      { ...baseInput, churchTax: true, federalState: 'BW' },
+      config
+    );
+    const northRhine = calculateSalary(
+      { ...baseInput, churchTax: true, federalState: 'NW' },
+      config
+    );
+
+    expect(badenWuerttemberg.churchTax).toBeLessThan(northRhine.churchTax);
+  });
+
+  it('applies custom health insurance additional rate', () => {
+    const standard = calculateSalary(
+      { ...baseInput, healthInsuranceAdditionalRate: 1.5 },
+      config
+    );
+    const higher = calculateSalary(
+      { ...baseInput, healthInsuranceAdditionalRate: 2.5 },
+      config
+    );
+
+    expect(higher.socialContributions.health).toBeGreaterThan(standard.socialContributions.health);
   });
 });

@@ -105,11 +105,17 @@ function computeSolidarityTax(
   return incomeTax * config.rate;
 }
 
-function computeChurchTax(incomeTax: number, config: ConfigData['churchTax'], enabled: boolean): number {
+function computeChurchTax(
+  incomeTax: number, 
+  config: ConfigData['churchTax'], 
+  enabled: boolean,
+  federalState: string
+): number {
   if (!enabled || incomeTax <= 0) {
     return 0;
   }
-  return incomeTax * config.rate;
+  const rate = config.rateByState[federalState] ?? config.rate;
+  return incomeTax * rate;
 }
 
 function computeVoluntaryInsurance(
@@ -127,6 +133,64 @@ function computeVoluntaryInsurance(
   return monthlyContribution * applicableMonths;
 }
 
+function computeCompanyCarBenefit(
+  listPrice: number,
+  benefitRate: number
+): number {
+  if (listPrice <= 0) {
+    return 0;
+  }
+  return listPrice * benefitRate * MONTHS_PER_YEAR;
+}
+
+function computeMealVoucherTaxablePortion(
+  monthlyVoucherValue: number,
+  taxFreeLimit: number,
+  months: number
+): number {
+  if (monthlyVoucherValue <= 0) {
+    return 0;
+  }
+  const taxablePortion = Math.max(0, monthlyVoucherValue - taxFreeLimit);
+  return taxablePortion * Math.min(months, MONTHS_PER_YEAR);
+}
+
+function computeCapitalGainsAllowance(
+  monthlyAmount: number,
+  maxEmployer: number,
+  months: number
+): number {
+  if (monthlyAmount <= 0) {
+    return 0;
+  }
+  const cappedMonthly = Math.min(monthlyAmount, maxEmployer);
+  return cappedMonthly * Math.min(months, MONTHS_PER_YEAR);
+}
+
+function computeCompanyPensionDeduction(
+  monthlyPension: number,
+  maxTaxFree: number,
+  months: number
+): number {
+  if (monthlyPension <= 0) {
+    return 0;
+  }
+  const cappedMonthly = Math.min(monthlyPension, maxTaxFree);
+  return cappedMonthly * Math.min(months, MONTHS_PER_YEAR);
+}
+
+function applyMonthlyCapWithCustomRate(
+  value: number, 
+  config: SocialContributionConfig,
+  customAdditionalRate?: number
+): number {
+  const cappedBase = Math.min(value, config.capMonthly);
+  const baseContribution = cappedBase * config.employeeRate;
+  const additionalRate = customAdditionalRate ?? config.additionalRate ?? 0;
+  return baseContribution + cappedBase * additionalRate;
+}
+
+
 export function calculateSalary(
   input: SalaryInput,
   config: ConfigData
@@ -140,6 +204,13 @@ export function calculateSalary(
 
   const annualGross = monthlyGrosses.reduce((sum, value) => sum + value, 0);
   const monthlyGross = months > 0 ? annualGross / months : 0;
+  
+  const companyCarBenefit = computeCompanyCarBenefit(input.companyCarBenefit, config.companyCarBenefitRate);
+  const mealVoucherTaxable = computeMealVoucherTaxablePortion(
+    input.mealVouchers,
+    config.allowances.mealVoucherTaxFreeLimit,
+    months
+  );
 
   const homeOfficeAllowance = computeAllowanceHomeOffice(input.homeOfficeDaysPerYear, config.allowances);
   const commuteAllowance = computeAllowanceCommute(
@@ -148,18 +219,35 @@ export function calculateSalary(
     months,
     config.allowances
   );
+  
+  const companyPensionDeduction = computeCompanyPensionDeduction(
+    input.companyPension,
+    config.companyPensionMaxTaxFree,
+    months
+  );
+  
+  const capitalGainsAllowance = computeCapitalGainsAllowance(
+    input.capitalGainsAllowance,
+    config.allowances.capitalGainsAllowanceMaxEmployer,
+    months
+  );
 
-  const taxableIncome = Math.max(0, annualGross - homeOfficeAllowance - commuteAllowance);
+  const taxableIncome = Math.max(
+    0, 
+    annualGross + companyCarBenefit + mealVoucherTaxable - homeOfficeAllowance - commuteAllowance - companyPensionDeduction - capitalGainsAllowance
+  );
   const taxClass = config.taxClasses[input.taxClass];
   const incomeTax = computeIncomeTax(taxableIncome, taxClass);
 
   const solidarityTax = input.solidarityTax
     ? computeSolidarityTax(taxableIncome, incomeTax, config.solidarityTax)
     : 0;
-  const churchTax = computeChurchTax(incomeTax, config.churchTax, input.churchTax);
+  const churchTax = computeChurchTax(incomeTax, config.churchTax, input.churchTax, input.federalState);
 
-  const healthAnnual = monthlyGrosses
-    .map((value) => applyMonthlyCap(value, config.socialContributions.health))
+  const effectiveHealthRate = input.privateHealthInsurance ? 0 : input.healthInsuranceAdditionalRate / 100;
+  
+  const healthAnnual = input.privateHealthInsurance ? 0 : monthlyGrosses
+    .map((value) => applyMonthlyCapWithCustomRate(value, config.socialContributions.health, effectiveHealthRate))
     .reduce((sum, value) => sum + value, 0);
 
   const pensionAnnual = monthlyGrosses

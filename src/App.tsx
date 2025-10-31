@@ -34,7 +34,15 @@ const defaultInput: SalaryInput = {
   homeOfficeDaysPerYear: 50,
   commuteDaysPerMonth: 10,
   commuteDistanceKm: 15,
-  hasChildren: false
+  hasChildren: false,
+  age: 30,
+  federalState: 'NW',
+  healthInsuranceAdditionalRate: 1.5,
+  privateHealthInsurance: false,
+  companyCarBenefit: 0,
+  capitalGainsAllowance: 0,
+  mealVouchers: 0,
+  companyPension: 0
 };
 
 function BonusList({
@@ -427,6 +435,141 @@ function App() {
                   setSalaryInput((prev) => ({
                     ...prev,
                     commuteDaysPerMonth: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
+
+            <label className="field-group">
+              <span>{translation.ageLabel}</span>
+              <input
+                type="number"
+                min="0"
+                max="120"
+                value={salaryInput.age}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    age: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
+
+            <label className="field-group">
+              <span>{translation.federalStateLabel}</span>
+              <select
+                value={salaryInput.federalState}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    federalState: event.target.value
+                  }))
+                }
+              >
+                {config &&
+                  Object.keys(config.churchTax.rateByState).map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+              </select>
+            </label>
+
+            <label className="field-group">
+              <span>{translation.healthInsuranceAdditionalRateLabel}</span>
+              <input
+                type="number"
+                min="0"
+                max="10"
+                step="0.1"
+                value={salaryInput.healthInsuranceAdditionalRate}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    healthInsuranceAdditionalRate: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
+
+            <div className="checkbox-group">
+              <input
+                type="checkbox"
+                id="private-health-insurance"
+                checked={salaryInput.privateHealthInsurance}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    privateHealthInsurance: event.target.checked
+                  }))
+                }
+              />
+              <label htmlFor="private-health-insurance">{translation.privateHealthInsuranceLabel}</label>
+            </div>
+          </div>
+
+          <h3 style={{ marginTop: '2rem' }}>{translation.additionalInputsHeading}</h3>
+          <div className="form-grid">
+            <label className="field-group">
+              <span>{translation.companyCarBenefitLabel}</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={salaryInput.companyCarBenefit}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    companyCarBenefit: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
+
+            <label className="field-group">
+              <span>{translation.capitalGainsAllowanceLabel}</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={salaryInput.capitalGainsAllowance}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    capitalGainsAllowance: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
+
+            <label className="field-group">
+              <span>{translation.mealVouchersLabel}</span>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={salaryInput.mealVouchers}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    mealVouchers: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
+
+            <label className="field-group">
+              <span>{translation.companyPensionLabel}</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={salaryInput.companyPension}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    companyPension: Number(event.target.value)
                   }))
                 }
               />
