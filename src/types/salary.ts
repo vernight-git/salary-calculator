@@ -52,6 +52,7 @@ export interface SalaryBreakdown {
   totalDeductions: number;
   annualNet: number;
   monthlyNet: number;
+  monthlyNetAmounts: number[];
 }
 
 export interface SalaryCalculatorContextValue {

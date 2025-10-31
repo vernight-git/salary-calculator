@@ -68,7 +68,10 @@ export const translations = {
       linkLabel: 'public/data/config.json',
       afterLink: ' without recompiling.'
     },
-    languageLabel: 'Language'
+    languageLabel: 'Language',
+    monthlyPayoutHeading: 'Monthly Payouts',
+    monthlyPayoutDescription: 'Net amount for each month of the year',
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   },
   de: {
     languageName: 'Deutsch',
@@ -137,7 +140,10 @@ export const translations = {
       linkLabel: 'public/data/config.json',
       afterLink: ' ohne erneutes Bauen angepasst werden.'
     },
-    languageLabel: 'Sprache'
+    languageLabel: 'Sprache',
+    monthlyPayoutHeading: 'Monatliche Auszahlungen',
+    monthlyPayoutDescription: 'Nettobetrag für jeden Monat des Jahres',
+    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
   }
 } as const;
 
