@@ -71,7 +71,10 @@ export const translations = {
     languageLabel: 'Language',
     monthlyPayoutHeading: 'Monthly Payouts',
     monthlyPayoutDescription: 'Net amount for each month of the year',
-    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    errorBoundaryTitle: 'Oops! Something went wrong',
+    errorBoundaryMessage: 'We are sorry, but something unexpected happened. Please try refreshing the page.',
+    errorBoundaryRefresh: 'Refresh Page'
   },
   de: {
     languageName: 'Deutsch',
@@ -143,7 +146,10 @@ export const translations = {
     languageLabel: 'Sprache',
     monthlyPayoutHeading: 'Monatliche Auszahlungen',
     monthlyPayoutDescription: 'Nettobetrag für jeden Monat des Jahres',
-    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    errorBoundaryTitle: 'Hoppla! Etwas ist schief gelaufen',
+    errorBoundaryMessage: 'Es tut uns leid, aber etwas Unerwartetes ist passiert. Bitte versuchen Sie, die Seite zu aktualisieren.',
+    errorBoundaryRefresh: 'Seite aktualisieren'
   }
 } as const;
 

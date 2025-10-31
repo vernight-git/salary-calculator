@@ -1310,7 +1310,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       expect(netBonusEffect).toBeLessThan(15000); // Less than gross bonus
 
       // All 12 months should have positive net
-      breakdown.monthlyNetAmounts.forEach((net, index) => {
+      breakdown.monthlyNetAmounts.forEach((net) => {
         expect(net).toBeGreaterThan(0);
       });
 
@@ -1401,8 +1401,8 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // December should have roughly (9000/53000) of total deductions
       // plus its social contributions
-      const decemberProportion = decemberGross / totalGross;
-      const regularProportion = regularGross / totalGross;
+      const _decemberProportion = decemberGross / totalGross;
+      const _regularProportion = regularGross / totalGross;
 
       // December net should be higher than regular months
       expect(breakdown.monthlyNetAmounts[11]).toBeGreaterThan(breakdown.monthlyNetAmounts[0]);
