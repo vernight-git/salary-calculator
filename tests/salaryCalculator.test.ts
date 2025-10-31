@@ -1004,9 +1004,10 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
        * - Pension salary conversion (Barlohnumwandlung): 400 EUR
        * - Company pension supplement (bAV Pflichtzuschuss): 80 EUR
        * - One-time payment in April: 15,000 EUR
-       * - Company car benefit: 443 EUR (monthly geldwerter Vorteil)
-       * - Company car KM benefit: 103.55 EUR (monthly)
-       * - Company car KM flat rate from employer: 66.56 EUR (monthly)
+       * - Company car: Hybrid with 0.5% rule, list price 92,500 EUR
+       *   - Monthly geldwerter Vorteil: 92,500 * 0.005 = 462.50 EUR
+       *   - Company car KM benefit: 103.55 EUR (monthly)
+       *   - Company car KM flat rate from employer: 66.56 EUR (monthly)
        * - Tax Class III, single earner without children
        * - Commute distance: 50 km (tax-free allowance on tax card)
        * - Home office: 1 day per week in office (4 days/month)
@@ -1024,8 +1025,11 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
        * the expected payout when considering the monthly breakdown.
        */
       const input: SalaryInput = {
-        // Base gross is 8000, but with pension conversion, the taxable base changes
-        // Steuerbrutto shows 8146.55 regular (8000 + 146.55 from benefits - 400 pension + 400 conversion)
+        // Base gross: 8000 EUR monthly salary
+        // The Steuerbrutto calculation in the problem shows:
+        // - Regular: 8,146.55 EUR (8000 base + 146.55 adjustments)
+        // - Bonus: 15,000 EUR
+        // - Total Steuerbrutto: 23,146.55 EUR for April
         baseMonthlyGross: 8000,
         taxClass: 'III',
         churchTax: false,
@@ -1047,10 +1051,11 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
         federalState: 'NW',
         healthInsuranceAdditionalRate: 1.7,
         privateHealthInsurance: true, // Private/voluntary health insurance
-        // Company car: 443 EUR monthly benefit (geldwerter Vorteil)
-        // Assuming combustion car with list price ~53,160 EUR (443 * 100 / 1% monthly)
-        companyCarBenefit: 53160,
-        companyCarType: 'combustion',
+        // Company car: Hybrid with 0.5% rule, list price 92,500 EUR
+        // Monthly benefit (geldwerter Vorteil): 92,500 * 0.005 = 462.50 EUR
+        // Plus KM benefit 103.55 EUR (brings it close to stated 443 + 103.55)
+        companyCarBenefit: 92500,
+        companyCarType: 'hybrid',
         capitalGainsAllowance: 0,
         mealVouchers: 0,
         // Pension: 400 EUR monthly contribution reduces taxable income
@@ -1075,9 +1080,9 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       // Annual gross should be 8000 * 12 + 15000 = 111000
       expect(breakdown.annualGross).toBe(111000);
       
-      // Taxable income includes company car benefit (53160 * 0.01 * 12 = 6379.20)
-      // and reduces for pension (400 * 12 = 4800) and commute allowance
-      // Expected taxable income should be around 111000 + 6379 - 4800 - allowances
+      // Taxable income includes company car benefit (92,500 * 0.005 * 12 = 5,550)
+      // and reduces for pension (400 * 12 = 4,800) and commute allowance
+      // Expected taxable income should be around 111,000 + 5,550 - 4,800 - allowances
       expect(breakdown.taxableIncome).toBeGreaterThan(105000);
       expect(breakdown.taxableIncome).toBeLessThan(115000);
 
