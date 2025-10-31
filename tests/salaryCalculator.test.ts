@@ -1000,25 +1000,20 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
       /**
        * Test case based on specific payroll calculation for April 2025:
        * - Base salary: 8000 EUR
-       * - Pension reduction (Kürzung Altersvorsorge): -400 EUR
-       * - Pension salary conversion (Barlohnumwandlung): 400 EUR
-       * - Company pension supplement (bAV Pflichtzuschuss): 80 EUR
        * - One-time payment in April: 15,000 EUR
        * - Company car: Hybrid with 0.5% rule, list price 92,500 EUR
        *   - Monthly geldwerter Vorteil: 92,500 * 0.005 = 462.50 EUR
-       *   - Company car KM benefit: 103.55 EUR (monthly)
-       *   - Company car KM flat rate from employer: 66.56 EUR (monthly)
+       * - Company pension: 400 EUR monthly contribution (reduces taxable income)
        * - Tax Class III, single earner without children
        * - Commute distance: 50 km (tax-free allowance on tax card)
        * - Home office: 1 day per week in office (4 days/month)
        * - Voluntary health insurance (private)
        * 
-       * Breakdown from problem statement:
-       * - Gesamtbrutto April: 23,613.11 EUR (including all benefits)
-       * - Steuerbrutto: 23,146.55 EUR (8,146.55 regular + 15,000 bonus)
+       * Expected calculation from problem statement:
+       * - Gesamtbrutto April: 23,613.11 EUR (gross including all components)
        * - Nettoentgeld: 16,530.75 EUR (after taxes and social contributions)
-       * - Net deductions: -1,644.30 EUR (health insurance, pension, company car)
-       * - Expected final payout: 14,886.45 EUR
+       * - Net deductions: -1,644.30 EUR (health insurance, pension payments, car costs)
+       * - Expected final payout: 14,886.45 EUR (16,530.75 - 1,644.30)
        * 
        * Note: The calculator computes annual values and averages them.
        * This test validates the calculation produces values consistent with
@@ -1026,10 +1021,8 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
        */
       const input: SalaryInput = {
         // Base gross: 8000 EUR monthly salary
-        // The Steuerbrutto calculation in the problem shows:
-        // - Regular: 8,146.55 EUR (8000 base + 146.55 adjustments)
-        // - Bonus: 15,000 EUR
-        // - Total Steuerbrutto: 23,146.55 EUR for April
+        // Note: The problem statement mentions various payroll adjustments,
+        // but the calculator uses the base salary as the primary input
         baseMonthlyGross: 8000,
         taxClass: 'III',
         churchTax: false,
@@ -1052,8 +1045,7 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
         healthInsuranceAdditionalRate: 1.7,
         privateHealthInsurance: true, // Private/voluntary health insurance
         // Company car: Hybrid with 0.5% rule, list price 92,500 EUR
-        // Monthly benefit (geldwerter Vorteil): 92,500 * 0.005 = 462.50 EUR
-        // Plus KM benefit 103.55 EUR (brings it close to stated 443 + 103.55)
+        // This generates a monthly taxable benefit (geldwerter Vorteil)
         companyCarBenefit: 92500,
         companyCarType: 'hybrid',
         capitalGainsAllowance: 0,
