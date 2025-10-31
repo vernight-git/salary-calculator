@@ -10,6 +10,7 @@ export interface TaxClassConfig {
   basicAllowance: number;
   additionalAllowance: number;
   brackets: TaxBracket[];
+  childAllowanceFactorMultiplier?: number;
 }
 
 export interface SocialContributionConfig {
@@ -17,6 +18,8 @@ export interface SocialContributionConfig {
   capMonthly: number;
   additionalRate?: number;
   surchargeWithoutChildren?: number;
+  childDiscountPerChildAfterFirst?: number;
+  maxChildDiscountChildren?: number;
 }
 
 export interface AllowanceConfig {
@@ -30,6 +33,7 @@ export interface AllowanceConfig {
   };
   mealVoucherTaxFreeLimit: number;
   capitalGainsAllowanceMaxEmployer: number;
+  childAllowancePerFactor: number;
 }
 
 export interface ConfigData {
