@@ -201,7 +201,7 @@ test('calculates salary successfully', async ({ page }) => {
 
 - Add JSDoc comments to all public functions
 - Update README.md for user-facing changes
-- Update DEPLOYMENT.md for deployment-related changes
+- Update documents/DEPLOYMENT.md for deployment-related changes
 - Add comments for complex logic
 - Keep documentation in sync with code
 

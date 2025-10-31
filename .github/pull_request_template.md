@@ -71,7 +71,7 @@
 <!-- Mark completed items with an 'x' -->
 
 - [ ] README.md updated (if user-facing changes)
-- [ ] DEPLOYMENT.md updated (if deployment-related changes)
+- [ ] documents/DEPLOYMENT.md updated (if deployment-related changes)
 - [ ] JSDoc comments added/updated
 - [ ] Code comments added where necessary
 - [ ] CHANGELOG entry added

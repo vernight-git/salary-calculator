@@ -73,13 +73,14 @@ See `documents/TEST_SUMMARY.md` for detailed test documentation.
 
 ## Documentation
 
-- **[Production Readiness Assessment](PRODUCTION_READINESS_ASSESSMENT.md)** - Comprehensive evaluation of production readiness
-- **[Deployment Guide](DEPLOYMENT.md)** - Instructions for deploying to various platforms
+- **[Production Readiness Assessment](documents/PRODUCTION_READINESS_ASSESSMENT.md)** - Comprehensive evaluation of production readiness
+- **[Deployment Guide](documents/DEPLOYMENT.md)** - Instructions for deploying to various platforms
 - **[Security Assessment](SECURITY.md)** - Security considerations and vulnerability reports
-- **[Security Headers](SECURITY_HEADERS.md)** - Security headers configuration guide
+- **[Security Headers](documents/SECURITY_HEADERS.md)** - Security headers configuration guide
 - **[Test Documentation](documents/TEST_SUMMARY.md)** - Detailed test coverage and validation
 - **[Contributing Guidelines](CONTRIBUTING.md)** - How to contribute to the project
-- **[Architecture Decisions](ARCHITECTURE.md)** - Architecture Decision Records (ADRs)
+- **[Architecture Decisions](documents/ARCHITECTURE.md)** - Architecture Decision Records (ADRs)
+- **[Enterprise Transformation](documents/ENTERPRISE_TRANSFORMATION.md)** - Complete transformation summary
 
 ## Production Readiness
 
@@ -133,7 +134,7 @@ The application has been enhanced to enterprise-grade standards:
 - Build verification
 - Artifact uploads and retention
 
-See [PRODUCTION_READINESS_ASSESSMENT.md](PRODUCTION_READINESS_ASSESSMENT.md) for detailed analysis.
+See [documents/PRODUCTION_READINESS_ASSESSMENT.md](documents/PRODUCTION_READINESS_ASSESSMENT.md) for detailed analysis.
 
 ## Contributing
 
