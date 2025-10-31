@@ -28,6 +28,8 @@ export interface AllowanceConfig {
     thresholdMonthly: number;
     additionalRate: number;
   };
+  mealVoucherTaxFreeLimit: number;
+  capitalGainsAllowanceMaxEmployer: number;
 }
 
 export interface ConfigData {
@@ -49,6 +51,9 @@ export interface ConfigData {
   };
   churchTax: {
     rate: number;
+    rateByState: Record<string, number>;
   };
   allowances: AllowanceConfig;
+  companyCarBenefitRate: number;
+  companyPensionMaxTaxFree: number;
 }

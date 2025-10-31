@@ -105,7 +105,25 @@
     "rate": 0.055
   },
   "churchTax": {
-    "rate": 0.09
+    "rate": 0.09,
+    "rateByState": {
+      "BW": 0.08,
+      "BY": 0.08,
+      "BE": 0.09,
+      "BB": 0.09,
+      "HB": 0.09,
+      "HH": 0.09,
+      "HE": 0.09,
+      "MV": 0.09,
+      "NI": 0.09,
+      "NW": 0.09,
+      "RP": 0.09,
+      "SL": 0.09,
+      "SN": 0.09,
+      "ST": 0.09,
+      "SH": 0.09,
+      "TH": 0.09
+    }
   },
   "allowances": {
     "homeOfficeDailyRate": 6,
@@ -115,6 +133,10 @@
     "voluntaryInsurance": {
       "thresholdMonthly": 5987.5,
       "additionalRate": 0.01
-    }
-  }
+    },
+    "mealVoucherTaxFreeLimit": 7.23,
+    "capitalGainsAllowanceMaxEmployer": 40
+  },
+  "companyCarBenefitRate": 0.01,
+  "companyPensionMaxTaxFree": 302
 }
