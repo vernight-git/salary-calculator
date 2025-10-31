@@ -70,11 +70,16 @@ function applyMonthlyCap(value: number, config: SocialContributionConfig): numbe
 function computeLongTermCareContribution(
   monthlyGross: number,
   config: SocialContributionConfig,
-  hasChildren: boolean
+  childrenUnder25: number
 ): number {
   const cappedBase = Math.min(monthlyGross, config.capMonthly);
-  const surcharge = !hasChildren ? config.surchargeWithoutChildren ?? 0 : 0;
-  return cappedBase * (config.employeeRate + surcharge);
+  const surcharge = childrenUnder25 > 0 ? 0 : config.surchargeWithoutChildren ?? 0;
+  const discountPerChild = config.childDiscountPerChildAfterFirst ?? 0;
+  const maxDiscountChildren = config.maxChildDiscountChildren ?? Number.POSITIVE_INFINITY;
+  const eligibleChildren = Math.max(0, Math.min(childrenUnder25 - 1, maxDiscountChildren));
+  const discount = discountPerChild * eligibleChildren;
+  const effectiveRate = Math.max(0, (config.employeeRate ?? 0) - discount);
+  return cappedBase * (effectiveRate + surcharge);
 }
 
 export function computeIncomeTax(taxableIncome: number, taxClassConfig: TaxClassConfig): number {
@@ -234,11 +239,26 @@ export function calculateSalary(
     months
   );
 
-  const taxableIncome = Math.max(
-    0, 
-    annualGross + companyCarBenefit + mealVoucherTaxable - homeOfficeAllowance - commuteAllowance - companyPensionDeduction - capitalGainsAllowance
-  );
   const taxClass = config.taxClasses[input.taxClass];
+
+  const childAllowanceBase = config.allowances.childAllowancePerFactor ?? 0;
+  const childAllowanceMultiplier = taxClass.childAllowanceFactorMultiplier ?? 1;
+  const childAllowance =
+    input.childAllowanceFactors > 0
+      ? childAllowanceBase * childAllowanceMultiplier * input.childAllowanceFactors
+      : 0;
+
+  const taxableIncome = Math.max(
+    0,
+    annualGross +
+      companyCarBenefit +
+      mealVoucherTaxable -
+      homeOfficeAllowance -
+      commuteAllowance -
+      companyPensionDeduction -
+      capitalGainsAllowance -
+      childAllowance
+  );
   const incomeTax = computeIncomeTax(taxableIncome, taxClass);
 
   const solidarityTax = input.solidarityTax
@@ -246,8 +266,8 @@ export function calculateSalary(
     : 0;
   const churchTax = computeChurchTax(incomeTax, config.churchTax, input.churchTax, input.federalState);
 
-  const effectiveHealthRate = input.privateHealthInsurance ? 0 : input.healthInsuranceAdditionalRate / 100;
-  
+  const effectiveHealthRate = input.privateHealthInsurance ? 0 : input.healthInsuranceAdditionalRate / 200;
+
   const healthAnnual = input.privateHealthInsurance ? 0 : monthlyGrosses
     .map((value) => applyMonthlyCapWithCustomRate(value, config.socialContributions.health, effectiveHealthRate))
     .reduce((sum, value) => sum + value, 0);
@@ -261,7 +281,9 @@ export function calculateSalary(
     .reduce((sum, value) => sum + value, 0);
 
   const longTermCareAnnual = monthlyGrosses
-    .map((value) => computeLongTermCareContribution(value, config.socialContributions.longTermCare, input.hasChildren))
+    .map((value) =>
+      computeLongTermCareContribution(value, config.socialContributions.longTermCare, input.childrenUnder25)
+    )
     .reduce((sum, value) => sum + value, 0);
 
   const voluntaryAnnual = computeVoluntaryInsurance(

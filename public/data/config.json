@@ -2,13 +2,14 @@
   "meta": {
     "country": "Germany",
     "currency": "EUR",
-    "taxYear": 2024
+    "taxYear": 2025
   },
   "taxClasses": {
     "I": {
       "label": "Class I",
-      "basicAllowance": 11604,
+      "basicAllowance": 12096,
       "additionalAllowance": 0,
+      "childAllowanceFactorMultiplier": 1,
       "brackets": [
         { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
         { "upTo": 16396, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
@@ -19,8 +20,9 @@
     },
     "II": {
       "label": "Class II",
-      "basicAllowance": 11604,
+      "basicAllowance": 12096,
       "additionalAllowance": 4260,
+      "childAllowanceFactorMultiplier": 1,
       "brackets": [
         { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
         { "upTo": 16396, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
@@ -31,8 +33,9 @@
     },
     "III": {
       "label": "Class III",
-      "basicAllowance": 23208,
+      "basicAllowance": 24192,
       "additionalAllowance": 0,
+      "childAllowanceFactorMultiplier": 2,
       "brackets": [
         { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
         { "upTo": 32792, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
@@ -43,8 +46,9 @@
     },
     "IV": {
       "label": "Class IV",
-      "basicAllowance": 11604,
+      "basicAllowance": 12096,
       "additionalAllowance": 0,
+      "childAllowanceFactorMultiplier": 1,
       "brackets": [
         { "upTo": 0, "rate": 0, "baseTax": 0, "baseIncome": 0 },
         { "upTo": 16396, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
@@ -57,6 +61,7 @@
       "label": "Class V",
       "basicAllowance": 0,
       "additionalAllowance": 0,
+      "childAllowanceFactorMultiplier": 0,
       "brackets": [
         { "upTo": 0, "rate": 0.06, "baseTax": 0, "baseIncome": 0 },
         { "upTo": 11604, "rate": 0.2, "baseTax": 0, "baseIncome": 0 },
@@ -70,6 +75,7 @@
       "label": "Class VI",
       "basicAllowance": 0,
       "additionalAllowance": 0,
+      "childAllowanceFactorMultiplier": 0,
       "brackets": [
         { "upTo": 0, "rate": 0.14, "baseTax": 0, "baseIncome": 0 },
         { "upTo": 11604, "rate": 0.25, "baseTax": 0, "baseIncome": 0 },
@@ -82,26 +88,28 @@
   },
   "socialContributions": {
     "health": {
-      "employeeRate": 0.073,
-      "additionalRate": 0.015,
-      "capMonthly": 4987.5
+      "employeeRate": 0.07,
+      "additionalRate": 0,
+      "capMonthly": 5512.5
     },
     "pension": {
       "employeeRate": 0.093,
-      "capMonthly": 7441.67
+      "capMonthly": 8050
     },
     "unemployment": {
       "employeeRate": 0.012,
-      "capMonthly": 7441.67
+      "capMonthly": 8050
     },
     "longTermCare": {
-      "employeeRate": 0.01525,
+      "employeeRate": 0.018,
       "surchargeWithoutChildren": 0.006,
-      "capMonthly": 4987.5
+      "childDiscountPerChildAfterFirst": 0.0025,
+      "maxChildDiscountChildren": 4,
+      "capMonthly": 5512.5
     }
   },
   "solidarityTax": {
-    "freeAllowance": 16956,
+    "freeAllowance": 19950,
     "rate": 0.055
   },
   "churchTax": {
@@ -131,11 +139,12 @@
     "commuteRateFirst20": 0.3,
     "commuteRateBeyond": 0.38,
     "voluntaryInsurance": {
-      "thresholdMonthly": 5987.5,
+      "thresholdMonthly": 5512.5,
       "additionalRate": 0.01
     },
     "mealVoucherTaxFreeLimit": 7.23,
-    "capitalGainsAllowanceMaxEmployer": 40
+    "capitalGainsAllowanceMaxEmployer": 40,
+    "childAllowancePerFactor": 4800
   },
   "companyCarBenefitRates": {
     "combustion": 0.01,

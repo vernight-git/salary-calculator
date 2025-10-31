@@ -34,7 +34,8 @@ const defaultInput: SalaryInput = {
   homeOfficeDaysPerYear: 50,
   commuteDaysPerMonth: 10,
   commuteDistanceKm: 15,
-  hasChildren: false,
+  childAllowanceFactors: 0,
+  childrenUnder25: 0,
   age: 30,
   federalState: 'NW',
   healthInsuranceAdditionalRate: 1.5,
@@ -380,20 +381,37 @@ function App() {
               <label htmlFor="voluntary-insurance">{translation.voluntaryInsuranceLabel}</label>
             </div>
 
-            <div className="checkbox-group">
+            <label className="field-group">
+              <span>{translation.childAllowanceLabel}</span>
               <input
-                type="checkbox"
-                id="has-children"
-                checked={salaryInput.hasChildren}
+                type="number"
+                min="0"
+                step="0.5"
+                value={salaryInput.childAllowanceFactors}
                 onChange={(event) =>
                   setSalaryInput((prev) => ({
                     ...prev,
-                    hasChildren: event.target.checked
+                    childAllowanceFactors: Number(event.target.value)
                   }))
                 }
               />
-              <label htmlFor="has-children">{translation.hasChildrenLabel}</label>
-            </div>
+            </label>
+
+            <label className="field-group">
+              <span>{translation.childrenUnder25Label}</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={salaryInput.childrenUnder25}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    childrenUnder25: Number(event.target.value)
+                  }))
+                }
+              />
+            </label>
 
             <label className="field-group">
               <span>{translation.homeOfficeDaysLabel}</span>

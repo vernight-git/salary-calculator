@@ -21,7 +21,8 @@ export interface SalaryInput {
   homeOfficeDaysPerYear: number;
   commuteDaysPerMonth: number;
   commuteDistanceKm: number;
-  hasChildren: boolean;
+  childAllowanceFactors: number;
+  childrenUnder25: number;
   age: number;
   federalState: string;
   healthInsuranceAdditionalRate: number;
