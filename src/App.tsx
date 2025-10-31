@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { calculateSalary } from './utils/salaryCalculator';
-import type { BonusEntry, SalaryBreakdown, SalaryInput } from './types/salary';
+import type { BonusEntry, CompanyCarType, SalaryBreakdown, SalaryInput } from './types/salary';
 import { useConfig } from './hooks/useConfig';
 import { formatCurrency } from './utils/format';
 import {
@@ -40,6 +40,7 @@ const defaultInput: SalaryInput = {
   healthInsuranceAdditionalRate: 1.5,
   privateHealthInsurance: false,
   companyCarBenefit: 0,
+  companyCarType: 'none',
   capitalGainsAllowance: 0,
   mealVouchers: 0,
   companyPension: 0
@@ -525,6 +526,24 @@ function App() {
                   }))
                 }
               />
+            </label>
+
+            <label className="field-group">
+              <span>{translation.companyCarTypeLabel}</span>
+              <select
+                value={salaryInput.companyCarType}
+                onChange={(event) =>
+                  setSalaryInput((prev) => ({
+                    ...prev,
+                    companyCarType: event.target.value as CompanyCarType
+                  }))
+                }
+              >
+                <option value="none">{translation.companyCarTypeNone}</option>
+                <option value="combustion">{translation.companyCarTypeCombustion}</option>
+                <option value="hybrid">{translation.companyCarTypeHybrid}</option>
+                <option value="electric">{translation.companyCarTypeElectric}</option>
+              </select>
             </label>
 
             <label className="field-group">

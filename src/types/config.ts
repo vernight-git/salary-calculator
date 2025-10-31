@@ -54,6 +54,10 @@ export interface ConfigData {
     rateByState: Record<string, number>;
   };
   allowances: AllowanceConfig;
-  companyCarBenefitRate: number;
+  companyCarBenefitRates: {
+    combustion: number;
+    hybrid: number;
+    electric: number;
+  };
   companyPensionMaxTaxFree: number;
 }

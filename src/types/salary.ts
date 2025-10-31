@@ -1,5 +1,7 @@
 import type { ConfigData, TaxClassConfig } from './config';
 
+export type CompanyCarType = 'combustion' | 'hybrid' | 'electric' | 'none';
+
 export interface BonusEntry {
   id: string;
   month: number;
@@ -25,6 +27,7 @@ export interface SalaryInput {
   healthInsuranceAdditionalRate: number;
   privateHealthInsurance: boolean;
   companyCarBenefit: number;
+  companyCarType: CompanyCarType;
   capitalGainsAllowance: number;
   mealVouchers: number;
   companyPension: number;
