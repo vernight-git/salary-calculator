@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
+import React from 'react';
 
 // Component that throws an error
 function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
@@ -13,7 +14,7 @@ function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
 describe('ErrorBoundary', () => {
   // Suppress console.error for these tests
   const originalError = console.error;
-  
+
   beforeEach(() => {
     console.error = vi.fn();
   });
@@ -78,7 +79,7 @@ describe('ErrorBoundary', () => {
 
   it('renders custom fallback when provided', () => {
     const customFallback = <div>Custom error fallback</div>;
-    
+
     render(
       <ErrorBoundary fallback={customFallback}>
         <ThrowError shouldThrow={true} />
@@ -121,7 +122,7 @@ describe('ErrorBoundary', () => {
     // Mock navigator.language to trigger fallback
     Object.defineProperty(navigator, 'language', {
       writable: true,
-      value: 'fr-FR'  // Unsupported language
+      value: 'fr-FR' // Unsupported language
     });
 
     render(
@@ -134,7 +135,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('handles errors with no message', () => {
-    function ThrowNoMessage() {
+    function ThrowNoMessage(): React.JSX.Element {
       throw new Error();
     }
 

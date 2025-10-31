@@ -1,40 +1,69 @@
+/* eslint-disable no-undef */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { ConfigProvider, useConfig } from '../src/hooks/useConfig';
 import type { ConfigData } from '../src/types/config';
 
 const mockConfigData: ConfigData = {
+  meta: {
+    country: 'DE',
+    currency: 'EUR',
+    taxYear: 2024
+  },
   taxClasses: {
     1: {
-      name: 'Class I',
+      label: 'Class I',
+      basicAllowance: 11604,
+      additionalAllowance: 0,
       brackets: [
-        { upTo: 11604, rate: 0 },
-        { upTo: 17005, rate: 14 }
+        { upTo: 11604, rate: 0, baseTax: 0, baseIncome: 0 },
+        { upTo: 17005, rate: 14, baseTax: 0, baseIncome: 11604 }
       ]
     }
   },
-  socialInsurance: {
-    health: { rate: 7.3, cap: 5175 },
-    pension: { rate: 9.3, cap: 7550 },
-    unemployment: { rate: 1.3, cap: 7550 },
-    longTermCare: { baseRate: 1.7, childlessSurcharge: 0.6, cap: 5175 }
+  solidarityTax: {
+    freeAllowance: 17543,
+    rate: 5.5
+  },
+  churchTax: {
+    rate: 8,
+    rateByState: {}
+  },
+  socialContributions: {
+    health: { employeeRate: 7.3, capMonthly: 5175 },
+    pension: { employeeRate: 9.3, capMonthly: 7550 },
+    unemployment: { employeeRate: 1.3, capMonthly: 7550 },
+    longTermCare: {
+      employeeRate: 1.7,
+      capMonthly: 5175,
+      surchargeWithoutChildren: 0.6
+    }
   },
   allowances: {
-    homeOffice: { maxDays: 210, dailyRate: 6 },
-    commuter: { threshold: 20, belowRate: 0.3, aboveRate: 0.38 }
+    homeOfficeDailyRate: 6,
+    homeOfficeMax: 1260,
+    commuteRateFirst20: 0.3,
+    commuteRateBeyond: 0.38,
+    voluntaryInsurance: {
+      thresholdMonthly: 5000,
+      additionalRate: 2.0
+    },
+    mealVoucherTaxFreeLimit: 7.23,
+    capitalGainsAllowanceMaxEmployer: 100,
+    childAllowancePerFactor: 250
   },
-  voluntaryInsurance: {
-    monthlyAmount: 100,
-    baseContribution: 50,
-    perChildReduction: 10,
-    maxChildren: 3
-  }
+  companyCarBenefitRates: {
+    combustion: 1.0,
+    hybrid: 0.5,
+    electric: 0.25
+  },
+  companyPensionMaxTaxFree: 584
 };
 
 // Test component that uses the hook
 function TestComponent() {
   const { config, loading, error, refresh } = useConfig();
-  
+
   return (
     <div>
       {loading && <div>Loading...</div>}
@@ -47,7 +76,7 @@ function TestComponent() {
 
 describe('useConfig hook', () => {
   beforeEach(() => {
-    global.fetch = vi.fn();
+    global.fetch = vi.fn() as unknown as typeof global.fetch;
   });
 
   afterEach(() => {
@@ -57,11 +86,11 @@ describe('useConfig hook', () => {
   it('throws error when used outside ConfigProvider', () => {
     // Suppress console.error for this test
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
+
     expect(() => {
       render(<TestComponent />);
     }).toThrow('useConfig must be used within a ConfigProvider');
-    
+
     consoleError.mockRestore();
   });
 
@@ -108,9 +137,7 @@ describe('useConfig hook', () => {
   });
 
   it('handles network error', async () => {
-    (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
-      new Error('Network error')
-    );
+    (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Network error'));
 
     render(
       <ConfigProvider>
@@ -200,8 +227,8 @@ describe('useConfig hook', () => {
   });
 
   it('maintains loading state during refresh', async () => {
-    let resolvePromise: (value: any) => void;
-    const fetchPromise = new Promise((resolve) => {
+    let resolvePromise: ((value: Response) => void) | undefined;
+    const fetchPromise = new Promise<Response>((resolve) => {
       resolvePromise = resolve;
     });
 

@@ -11,16 +11,21 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './vitest.setup.ts',
     globals: true,
+    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+    exclude: ['node_modules', 'dist', 'e2e', '.idea', '.git', '.cache'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/',
         'tests/',
+        'e2e/',
         '**/*.test.ts',
         '**/*.test.tsx',
+        '**/*.spec.ts',
         'vite.config.ts',
         'vitest.setup.ts',
+        'playwright.config.ts',
         'dist/',
         '*.config.js',
         '*.config.ts'
