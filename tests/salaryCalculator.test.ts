@@ -51,6 +51,7 @@ describe('calculateSalary', () => {
     healthInsuranceAdditionalRate: 1.5,
     privateHealthInsurance: false,
     companyCarBenefit: 0,
+    companyCarType: 'none',
     capitalGainsAllowance: 0,
     mealVouchers: 0,
     companyPension: 0
@@ -95,13 +96,58 @@ describe('calculateSalary', () => {
   it('applies company car benefit to taxable income', () => {
     const withoutCar = calculateSalary(baseInput, config);
     const withCar = calculateSalary(
-      { ...baseInput, companyCarBenefit: 30000 },
+      { ...baseInput, companyCarBenefit: 30000, companyCarType: 'combustion' },
       config
     );
 
     expect(withCar.taxableIncome).toBeGreaterThan(withoutCar.taxableIncome);
     expect(withCar.incomeTax).toBeGreaterThan(withoutCar.incomeTax);
     expect(withCar.annualNet).toBeLessThan(withoutCar.annualNet);
+  });
+
+  it('applies different benefit rates for combustion, hybrid, and electric cars', () => {
+    const withoutCar = calculateSalary(baseInput, config);
+    const withCombustion = calculateSalary(
+      { ...baseInput, companyCarBenefit: 40000, companyCarType: 'combustion' },
+      config
+    );
+    const withHybrid = calculateSalary(
+      { ...baseInput, companyCarBenefit: 40000, companyCarType: 'hybrid' },
+      config
+    );
+    const withElectric = calculateSalary(
+      { ...baseInput, companyCarBenefit: 40000, companyCarType: 'electric' },
+      config
+    );
+
+    // Combustion should have the highest taxable income (1%)
+    expect(withCombustion.taxableIncome).toBeGreaterThan(withHybrid.taxableIncome);
+    expect(withHybrid.taxableIncome).toBeGreaterThan(withElectric.taxableIncome);
+    expect(withElectric.taxableIncome).toBeGreaterThan(withoutCar.taxableIncome);
+
+    // Check the actual benefit amounts are calculated correctly
+    // Combustion: 40000 * 0.01 * 12 = 4800
+    const combustionBenefit = withCombustion.taxableIncome - withoutCar.taxableIncome;
+    expect(combustionBenefit).toBeCloseTo(4800, 0);
+
+    // Hybrid: 40000 * 0.005 * 12 = 2400
+    const hybridBenefit = withHybrid.taxableIncome - withoutCar.taxableIncome;
+    expect(hybridBenefit).toBeCloseTo(2400, 0);
+
+    // Electric: 40000 * 0.0025 * 12 = 1200
+    const electricBenefit = withElectric.taxableIncome - withoutCar.taxableIncome;
+    expect(electricBenefit).toBeCloseTo(1200, 0);
+  });
+
+  it('does not apply company car benefit when type is none', () => {
+    const withoutCar = calculateSalary(baseInput, config);
+    const withCarNone = calculateSalary(
+      { ...baseInput, companyCarBenefit: 40000, companyCarType: 'none' },
+      config
+    );
+
+    expect(withCarNone.taxableIncome).toBe(withoutCar.taxableIncome);
+    expect(withCarNone.incomeTax).toBe(withoutCar.incomeTax);
   });
 
   it('reduces taxable income with company pension', () => {

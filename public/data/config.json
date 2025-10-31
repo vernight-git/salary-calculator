@@ -137,6 +137,10 @@
     "mealVoucherTaxFreeLimit": 7.23,
     "capitalGainsAllowanceMaxEmployer": 40
   },
-  "companyCarBenefitRate": 0.01,
+  "companyCarBenefitRates": {
+    "combustion": 0.01,
+    "hybrid": 0.005,
+    "electric": 0.0025
+  },
   "companyPensionMaxTaxFree": 302
 }

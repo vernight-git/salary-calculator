@@ -1,5 +1,5 @@
 import type { ConfigData, SocialContributionConfig, TaxBracket, TaxClassConfig } from '../types/config';
-import type { BonusEntry, SalaryBreakdown, SalaryInput } from '../types/salary';
+import type { BonusEntry, CompanyCarType, SalaryBreakdown, SalaryInput } from '../types/salary';
 
 const MONTHS_PER_YEAR = 12;
 
@@ -135,11 +135,13 @@ function computeVoluntaryInsurance(
 
 function computeCompanyCarBenefit(
   listPrice: number,
-  benefitRate: number
+  carType: CompanyCarType,
+  benefitRates: ConfigData['companyCarBenefitRates']
 ): number {
-  if (listPrice <= 0) {
+  if (listPrice <= 0 || carType === 'none') {
     return 0;
   }
+  const benefitRate = benefitRates[carType as keyof typeof benefitRates] ?? 0;
   return listPrice * benefitRate * MONTHS_PER_YEAR;
 }
 
@@ -205,7 +207,7 @@ export function calculateSalary(
   const annualGross = monthlyGrosses.reduce((sum, value) => sum + value, 0);
   const monthlyGross = months > 0 ? annualGross / months : 0;
   
-  const companyCarBenefit = computeCompanyCarBenefit(input.companyCarBenefit, config.companyCarBenefitRate);
+  const companyCarBenefit = computeCompanyCarBenefit(input.companyCarBenefit, input.companyCarType, config.companyCarBenefitRates);
   const mealVoucherTaxable = computeMealVoucherTaxablePortion(
     input.mealVouchers,
     config.allowances.mealVoucherTaxFreeLimit,
