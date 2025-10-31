@@ -151,7 +151,9 @@ function ResultView({
       </div>
 
       <h3 style={{ marginTop: '2rem' }}>{t.monthlyPayoutHeading}</h3>
-      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#64748b' }}>{t.monthlyPayoutDescription}</p>
+      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#64748b' }}>
+        {t.monthlyPayoutDescription}
+      </p>
       <div className="monthly-payout-grid">
         {input.monthlyNetAmounts.map((amount, index) => (
           <div key={index} className="monthly-payout-item">
@@ -535,7 +537,9 @@ function App() {
                   }))
                 }
               />
-              <label htmlFor="private-health-insurance">{translation.privateHealthInsuranceLabel}</label>
+              <label htmlFor="private-health-insurance">
+                {translation.privateHealthInsuranceLabel}
+              </label>
             </div>
           </div>
 
