@@ -87,6 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       
@@ -104,6 +105,7 @@ jobs:
       
       - name: Run E2E tests
         run: npm run test:e2e
+        timeout-minutes: 10
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
