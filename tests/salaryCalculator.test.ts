@@ -1083,13 +1083,13 @@ describe('calculateSalary - comprehensive test scenarios with reference data', (
 
       // Social contributions should be capped at maximum amounts
       // Pension: max 8050 * 0.093 * 12 = 8983.80
-      // Unemployment: max 8050 * 0.012 * 12 = 1159.20
+      // Unemployment: max 8050 * 0.013 * 12 = 1255.80 (updated 2025 rate)
       // Long-term care: max 5512.5 * (0.018 + 0.006) * 12 = 1587.60
       expect(breakdown.socialContributions.pension).toBeGreaterThan(8900);
       expect(breakdown.socialContributions.pension).toBeLessThan(9100);
 
-      expect(breakdown.socialContributions.unemployment).toBeGreaterThan(1100);
-      expect(breakdown.socialContributions.unemployment).toBeLessThan(1200);
+      expect(breakdown.socialContributions.unemployment).toBeGreaterThan(1200);
+      expect(breakdown.socialContributions.unemployment).toBeLessThan(1300);
 
       // With childless surcharge: 5512.5 * (0.018 + 0.006) = 132.30 per month
       expect(breakdown.socialContributions.longTermCare).toBeGreaterThan(1500);
